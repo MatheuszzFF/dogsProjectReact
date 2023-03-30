@@ -1,14 +1,44 @@
-import React from 'react'
+import React from "react";
 
-const useForm = () => {
-    const [value, setValue] = React.useState('');
+const types = {
+  email: {
+    regex: /\S+@\S+\.\S+/,
+    message: "Preencha um email valido",
+  },
+};
+const useForm = (type) => {
+  const [value, setValue] = React.useState("");
+  const [error, setError] = React.useState(null);
 
-    function onChange({target}) {
-        setValue(target.value);
+  function validate(value) {
+    if (type === false) return true;
+    if (value.length === 0) {
+      setError("preencha um valor");
+      return false;
+    } else if (types[type] && !types[type].regex.test(value)) {
+      setError(types[type].message);
+      return false;
+    } else {
+      setError(null);
+      return true;
     }
-  return (
-    {value, setValue, onChange}
-  )
-}
+  }
 
-export default useForm
+  function onChange({ target }) {
+    if(error) {
+      validate(target.value);
+    }
+    setValue(target.value);
+  }
+
+  return {
+    value,
+    setValue,
+    onChange,
+    error,
+    validate: () => validate(value),
+    onBlur: () => validate(value),
+  };
+};
+
+export default useForm;
