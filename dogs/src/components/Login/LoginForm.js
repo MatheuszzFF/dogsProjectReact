@@ -11,12 +11,13 @@ const LoginForm = () => {
   const username = useForm();
   const password = useForm();
 
-  const {userLogin} = React.useContext(UserContext);
+  const {userLogin, error, loading} = React.useContext(UserContext);
 
   async function getUser(token) {
     const {url, options} = USER_GET(token);
     const response = await fetch(url, options);
     const json = await  response.json();
+    console.log(json);
   }
   async function handleSubmit(e) {
     e.preventDefault();
@@ -32,6 +33,7 @@ const LoginForm = () => {
         <Input label="Usuário" type="text" name="username" {...username} />
         <Input label="Senha" type="password" name="password" {...password}/>
         <Button>Entrar</Button>
+        {error && <p>{error}</p>}
       </form>
       <Link to="/login/criar">Cadastros</Link>
     </section>
